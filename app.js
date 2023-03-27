@@ -14,5 +14,16 @@ connectToDb((err) => {
 });
 
 app.get('/books', (req, res) => {
-  res.json({ message: 'All the books' });
+  let books = [];
+  
+  db.collection('books')
+    .find()
+    .sort({ author: 1 })
+    .forEach(book => books.push(book))
+    .then(() => {
+      res.json(books);
+    })
+    .catch(() => {
+      res.status(500).json({error: 'Could not fetch documents'});
+    });
 });
